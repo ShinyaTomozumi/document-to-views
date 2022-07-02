@@ -2,4 +2,4 @@
 cd `dirname $0`
 
 # Copy this script and change "-t" and "-i" to use it. / 本スクリプトをコピーして「-t」と「-i」を変更して使用してください。
-py yaml_to_view.py -t laravel -i sample.yaml
+python yaml_to_view.py -t laravel -i sample.yaml
