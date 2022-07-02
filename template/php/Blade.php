@@ -1,9 +1,9 @@
 <?php
 /**
-* TODO:
-* Delete "TODO:" and this comment when implementation of this screen is complete.
-* __comment__
-*/
+ * TODO:
+ * Delete "TODO:" and this comment when implementation of this screen is complete.
+ * __comment__
+ */
 ?>
     <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
