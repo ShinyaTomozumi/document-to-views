@@ -144,7 +144,7 @@ class Laravel:
         source_file = open(output_dirs + '/' + self.controller_name + '.php', 'w')
 
         # Controllerのテンプレートソースコードを読み込む
-        controller_file = open(os.getcwd() + '/template/php/ViewController.php', 'r')
+        controller_file = open(os.path.dirname(__file__) + '/../template/php/ViewController.php', 'r')
         template_source = controller_file.read()
 
         # ソースコードを設定する
@@ -236,7 +236,7 @@ class Laravel:
         source_file = open(output_dirs + '/' + blade_file_name + '.php', 'w')
 
         # bladeファイルのテンプレートソースコードを読み込む
-        blade_file = open(os.getcwd() + '/template/php/Blade.php', 'r')
+        blade_file = open(os.path.dirname(__file__) + '/../template/php/Blade.php', 'r')
         template_source = blade_file.read()
 
         # ソースコードを設定する
