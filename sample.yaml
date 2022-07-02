@@ -1,0 +1,13 @@
+version: '1.0'
+copyright: 'SampleCopy'
+author: 'sample author'
+description: |
+  This Web site was created for sample purposes.
+views:
+  index:
+    title: Sample web page top
+    url: /
+    description: |
+      Index page
+    middleware:
+      - auth
