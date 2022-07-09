@@ -200,6 +200,24 @@ class Laravel:
         else:
             template_source = template_source.replace('__author__', '\n * @author ' + self.author_name)
 
+        # パラメータを設定する
+        url_path_params = re.findall("(?<=\{).+?(?=\})", self.url)
+        if len(url_path_params) > 0:
+            str_parameter = ''
+            controller_comments = ''
+            # 設定に必要な文字列を作成する
+            for params in url_path_params:
+                str_parameter += ', string $' + params
+                controller_comments += '\n     * @param string $' + params
+
+            # パラメータを設定する
+            template_source = template_source.replace('__paths__', str_parameter)
+            template_source = template_source.replace('__comment_params__', controller_comments)
+        else:
+            # パラメータが存在しない場合はテンプレートの文字列を消去する
+            template_source = template_source.replace('__paths__', '')
+            template_source = template_source.replace('__comment_params__', '')
+
         # ViewControllers.phpファイルにソースコードを書き込む
         source_file.write(template_source)
         source_file.close()

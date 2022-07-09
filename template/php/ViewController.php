@@ -28,10 +28,10 @@ class __controller_name__ extends Controller
     /**
      * View
      *
-     * @param Request $request
+     * @param Request $request__comment_params__
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function view(Request $request)
+    public function view(Request $request__paths__)
     {
         // Define the parameters to be passed to the View.
         // Viewに渡すパラメータを定義する。
