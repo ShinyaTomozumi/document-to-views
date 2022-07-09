@@ -8,8 +8,11 @@ import datetime
 import shutil
 
 SCSS_FILE_NAME = 'app'
-RESOURCES_VIEW_SCSS_PATH = '/resources/css/view'
+TYPE_SCRIPT_FILE_NAME = 'app'
 RESOURCES_SCSS_PATH = '/resources/css'
+RESOURCES_TYPE_SCRIPT_PATH = '/resources/ts'
+RESOURCES_VIEW_SCSS_PATH = RESOURCES_SCSS_PATH + '/view'
+RESOURCES_VIEW_TYPE_SCRIPT_PATH = RESOURCES_TYPE_SCRIPT_PATH + '/view'
 ROUTES_FILE_NAME = 'web'
 ROUTES_DIR = '/routes'
 
@@ -56,6 +59,8 @@ def create_laravel_files(yaml_path, output_file_path):
 
     # Viewのデータ情報を設定する
     views = yaml_views['views']
+    ts_import_list = []
+    ts_on_load_list = []
     for key, view in views.items():
         # キーが存在しない場合はエラーを表示してcontinue
         if not view:
@@ -85,8 +90,20 @@ def create_laravel_files(yaml_path, output_file_path):
         if 'middleware' in view:
             laravel.middleware = view['middleware']
 
+        # app.ts用にインポート文字列とonload用の文字列を作成する
+        camel_name = re.sub("_(.)", lambda x: x.group(1).upper(), laravel.view_id.capitalize())
+        ts_import_list.append('const view{} = require(\'./view/{}\');\n'.format(camel_name, laravel.view_id))
+        on_load_text = 'if (document.getElementById\'{}\') != null) {{\n' \
+                       '        view{}.default();\n' \
+                       '    }}\n\n'.format(laravel.view_id.upper(), camel_name)
+        ts_on_load_list.append(on_load_text)
+
         # phpファイルの書き出し
         laravel.output_files()
+
+    # View データを設定する
+    laravel = Laravel(out_put)
+    laravel.white_ts_app_files(ts_import_list, ts_on_load_list)
 
 
 def init_routes_files(out_put, yaml_views):
@@ -172,6 +189,7 @@ class Laravel:
     middleware = []
 
     controller_name = ''
+    ts_views = []
 
     # 初期処理
     def __init__(self, out_put):
@@ -183,7 +201,7 @@ class Laravel:
         情報を書き出す
         :return:
         """
-        # Controllerファイルを作成する
+        # Controlleファイルを作成する
         self.create_view_controller()
 
         # routeファイルのソースを書き込む
@@ -197,6 +215,9 @@ class Laravel:
 
         # view用の scssファイルを作成する
         self.create_scss_view_files()
+
+        # view用の TypeScript ファイルを作成する。
+        self.create_type_script_view_file()
 
     def create_view_controller(self):
         """
@@ -390,8 +411,66 @@ class Laravel:
         source_file.write(source_code)
         source_file.close()
 
-    def create_type_script_file(self):
+    def create_type_script_view_file(self):
         """
-        TypeScriptファイルのテンプレートを作成
+        TypeScriptファイルのViewテンプレートを作成
         :return:
         """
+        # ファイル名を設定する
+        ts_view_file_name = self.view_id
+
+        # 保存先のフォルダを作成する
+        output_dirs = self.out_put + RESOURCES_VIEW_TYPE_SCRIPT_PATH
+        os.makedirs(output_dirs, exist_ok=True)
+
+        # TS viewファイルを開く
+        source_file = open(output_dirs + '/' + ts_view_file_name + '.ts', 'w')
+
+        # TS viewファイルのテンプレートソースコードを読み込む
+        ts_view_file = open(os.path.dirname(__file__) + '/../template/laravel_ts/view.ts', 'r')
+        template_source = ts_view_file.read()
+
+        # ソースコードを設定する
+        comment = self.description.replace('\n', '\n * ')
+        template_source = template_source.replace('__comment__', comment)
+
+        # view id を設定する
+        template_source = template_source.replace('__view_id__', self.view_id.upper())
+
+        # タイトルを設定する
+        template_source = template_source.replace('__title__', self.title)
+
+        # blade.phpファイルにソースコードを書き込む
+        source_file.write(template_source)
+        source_file.close()
+
+    def white_ts_app_files(self, ts_import_list, ts_on_load_list):
+        """
+        app.tsを書き出す
+        :param ts_import_list:
+        :param ts_on_load_list:
+        :return:
+        """
+        # ファイル名を設定する
+        ts_app_file_name = TYPE_SCRIPT_FILE_NAME
+
+        # 保存先のフォルダを作成する
+        output_dirs = self.out_put + RESOURCES_TYPE_SCRIPT_PATH
+        os.makedirs(output_dirs, exist_ok=True)
+
+        # blade.phpファイルを開く
+        source_file = open(output_dirs + '/' + ts_app_file_name + '.ts', 'w')
+
+        # TypeScriptのappファイルのテンプレートソースコードを読み込む
+        ts_app_file = open(os.path.dirname(__file__) + '/../template/laravel_ts/app.ts', 'r')
+        template_source = ts_app_file.read()
+
+        # Importの定義を設定する
+        template_source = template_source.replace('__require__', ''.join(ts_import_list))
+
+        # view ごとの読み込み処理を定義する
+        template_source = template_source.replace('__view_default__', ''.join(ts_on_load_list))
+
+        # app.tsファイルにソースコードを書き込む
+        source_file.write(template_source)
+        source_file.close()
