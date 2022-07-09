@@ -7,6 +7,12 @@ import yaml
 import datetime
 import shutil
 
+SCSS_FILE_NAME = 'app'
+RESOURCES_VIEW_SCSS_PATH = '/resources/css/view'
+RESOURCES_SCSS_PATH = '/resources/css'
+ROUTES_FILE_NAME = 'web'
+ROUTES_DIR = '/routes'
+
 
 def create_laravel_files(yaml_path, output_file_path):
     """
@@ -44,6 +50,9 @@ def create_laravel_files(yaml_path, output_file_path):
 
     # routes ファイルの初期化
     init_routes_files(out_put, yaml_views)
+
+    # app.scss ファイルの初期化
+    init_app_scss_files(out_put, yaml_views)
 
     # Viewのデータ情報を設定する
     views = yaml_views['views']
@@ -88,10 +97,10 @@ def init_routes_files(out_put, yaml_views):
     :return:
     """
     # 作成するファイル名の設定
-    route_name = 'web'
+    route_name = ROUTES_FILE_NAME
 
     # 保存先のフォルダを作成する
-    output_dirs = out_put + '/routes'
+    output_dirs = out_put + ROUTES_DIR
     os.makedirs(output_dirs, exist_ok=True)
 
     # web.phpファイルを書き込みモードで初期化
@@ -115,6 +124,38 @@ def init_routes_files(out_put, yaml_views):
                   ' */\n\n'.format(copyright_name, author_name, current_time)
 
     # ViewControllers.phpファイルにソースコードを読み込む
+    source_file.write(source_code)
+    source_file.close()
+
+
+def init_app_scss_files(out_put, yaml_views):
+    """
+    app.scss ファイルの初期化ファイルを作成する
+    :param out_put: 出力先のパス
+    :param yaml_views: yamlの情報
+    :return:
+    """
+    # 作成するファイル名の設定
+    file_name = SCSS_FILE_NAME
+
+    # 保存先のフォルダを作成する
+    output_dirs = out_put + RESOURCES_SCSS_PATH
+    os.makedirs(output_dirs, exist_ok=True)
+
+    # web.phpファイルを書き込みモードで初期化
+    source_file = open(output_dirs + '/' + file_name + '.scss', 'w')
+
+    # ソースコードを作成する
+    source_code = 'body {\n' \
+                  '    margin: 0;\n' \
+                  '    padding: 0;\n' \
+                  '    height: 100%;\n' \
+                  '}\n\n' \
+                  '// Library\n\n' \
+                  '// Import\n\n' \
+                  '// View\n'
+
+    # app.scssファイルにソースコードを読み込む
     source_file.write(source_code)
     source_file.close()
 
@@ -150,6 +191,12 @@ class Laravel:
 
         # bladeファイルを作成する
         self.create_blade_files()
+
+        # app.scssにソースを書き込む
+        self.write_scss_app_files()
+
+        # view用の scssファイルを作成する
+        self.create_scss_view_files()
 
     def create_view_controller(self):
         """
@@ -228,10 +275,10 @@ class Laravel:
         :return:
         """
         # ファイル名を設定する
-        route_name = 'web'
+        route_name = ROUTES_FILE_NAME
 
         # 保存先のフォルダを作成する
-        output_dirs = self.out_put + '/routes'
+        output_dirs = self.out_put + ROUTES_DIR
         os.makedirs(output_dirs, exist_ok=True)
 
         # web.phpファイルを書き込みモードで初期化
@@ -274,7 +321,7 @@ class Laravel:
         output_dirs = self.out_put + '/resources/views'
         os.makedirs(output_dirs, exist_ok=True)
 
-        # ViewControllers.phpファイルの初期化
+        # blade.phpファイルを開く
         source_file = open(output_dirs + '/' + blade_file_name + '.php', 'w')
 
         # bladeファイルのテンプレートソースコードを読み込む
@@ -294,3 +341,57 @@ class Laravel:
         # blade.phpファイルにソースコードを書き込む
         source_file.write(template_source)
         source_file.close()
+
+    def write_scss_app_files(self):
+        """
+        app.scssを書き出す
+        :return:
+        """
+        # ファイル名を設定する
+        scss_file_name = SCSS_FILE_NAME
+
+        # 保存先のフォルダを作成する
+        output_dirs = self.out_put + RESOURCES_SCSS_PATH
+        os.makedirs(output_dirs, exist_ok=True)
+
+        # app.scssファイルを追加書き込みモードで開く
+        source_file = open(output_dirs + '/' + scss_file_name + '.scss', 'a')
+
+        # 基本的なソースコードを定義する
+        view_id = self.view_id.lower()
+        source_code = '@import "view/{}";\n'.format(view_id)
+
+        # app.scssファイルにソースコードを書き込む
+        source_file.write(source_code)
+        source_file.close()
+
+    def create_scss_view_files(self):
+        """
+        view用のscssファイルを作成する
+        :return:
+        """
+        # ファイル名を設定する
+        scss_file_name = self.view_id
+
+        # 保存先のフォルダを作成する
+        output_dirs = self.out_put + RESOURCES_VIEW_SCSS_PATH
+        os.makedirs(output_dirs, exist_ok=True)
+
+        # scssファイルを開く
+        source_file = open(output_dirs + '/' + scss_file_name + '.scss', 'w')
+
+        # ソースコードの記述
+        view_id = self.view_id.lower()
+        source_code = '///\n' \
+                      '/// ViewID: {}";\n' \
+                      '///\n\n'.format(view_id)
+
+        # blade.phpファイルにソースコードを書き込む
+        source_file.write(source_code)
+        source_file.close()
+
+    def create_type_script_file(self):
+        """
+        TypeScriptファイルのテンプレートを作成
+        :return:
+        """
