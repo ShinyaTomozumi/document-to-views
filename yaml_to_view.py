@@ -5,6 +5,7 @@
 import sys
 import os
 from classes import class_laravel
+from models.parameter_config import ParameterConfig
 
 
 # Main function
@@ -19,11 +20,8 @@ if __name__ == '__main__':
     args = sys.argv
 
     # 引数の初期化
-    input_file_path = ''
-    output_file_path = ''
-    project_type = ''
-    author_name = ''
-    copyright_name = ''
+    parameter_config = ParameterConfig
+    parameter_config.output_dir_path = ''
 
     # パラメータの数をチェックする（最低4つは必要)
     if len(args) < 4:
@@ -36,40 +34,40 @@ if __name__ == '__main__':
         # 言語タイプを設定する
         if arg == '-t':
             if (i + 1) < len(args):
-                project_type = args[i + 1]
+                parameter_config.project_type = args[i + 1]
         # ファイルのパスを取得する
         if arg == '-i':
             if (i + 1) < len(args):
-                input_file_path = args[i + 1]
+                parameter_config.input_files_path = args[i + 1]
         # 出力先のパスを取得する
         if arg == '-o':
             if (i + 1) < len(args):
-                output_file_path = args[i + 1]
+                parameter_config.output_file_path = args[i + 1]
         i += 1
 
     # ファイルタイプが設定されていない場合はエラーを返却する
-    if project_type == '':
+    if parameter_config.project_type == '':
         print('Set the language (-t).')
         exit()
 
     # ファイルのパスが設定されていない場合はエラーを返却する
-    if input_file_path == '':
+    if parameter_config.input_files_path == '':
         print('Set the file path (-i).')
         exit()
 
     # ファイルが存在しない場合はエラーを返却する
-    if not os.path.isfile(input_file_path):
-        print(f'The specified file does not exist. {input_file_path}')
+    if not os.path.isfile(parameter_config.input_files_path):
+        print(f'The specified file does not exist. {parameter_config.input_files_path}')
         exit()
 
     # ファイルの拡張子が「yaml」もしくは「yml」以外の場合はエラーを返却する
-    if not input_file_path.endswith('yaml') and not input_file_path.endswith('yml'):
+    if not parameter_config.input_files_path.endswith('yaml') and not parameter_config.input_files_path.endswith('yml'):
         print('The specified file is not a "yaml" or "yml" file.')
         exit()
 
     # プロジェクトタイプによって作成するファイルを変更する
-    if project_type == 'laravel':
+    if parameter_config.project_type == 'laravel':
         # Laravel のViewファイルを作成する
-        class_laravel.create_laravel_files(input_file_path, output_file_path)
+        class_laravel.create_laravel_files(parameter_config)
 
     print('Finish yaml to views...')

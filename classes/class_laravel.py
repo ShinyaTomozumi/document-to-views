@@ -6,6 +6,8 @@ import re
 import yaml
 import datetime
 import shutil
+from typing import Type
+from models.parameter_config import ParameterConfig
 
 SCSS_FILE_NAME = 'app'
 TYPE_SCRIPT_FILE_NAME = 'app'
@@ -17,25 +19,19 @@ ROUTES_FILE_NAME = 'web'
 ROUTES_DIR = '/routes'
 
 
-def create_laravel_files(yaml_path, output_file_path):
+def create_laravel_files(parameter_config: Type[ParameterConfig]):
     """
     Laravel のViewファイルを作成する
-
-    Parameters
-    ----------
-    yaml_path : string
-        yamlファイルのパス
-    output_file_path : string
-        yamlファイルのパス
+    :param parameter_config:
     :return:
     """
     # yamlファイルの読み込み
-    with open(yaml_path, 'r') as yml:
+    with open(parameter_config.input_files_path, 'r') as yml:
         yaml_views = yaml.safe_load(yml)
 
     # 出力先の設定。パラメータが設定されていない場合はデフォルトを設定する。
-    out_put = output_file_path
-    if output_file_path == '':
+    out_put = parameter_config.output_dir_path
+    if out_put == '':
         out_put = 'output_views_laravel'
 
     # ShowMessage
@@ -201,7 +197,7 @@ class Laravel:
         情報を書き出す
         :return:
         """
-        # Controlleファイルを作成する
+        # Controllerファイルを作成する
         self.create_view_controller()
 
         # routeファイルのソースを書き込む
