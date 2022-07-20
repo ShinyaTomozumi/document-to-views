@@ -25,10 +25,11 @@ pip install pyyaml
 
 | Option | Description                                                                                   |
 |--------|-----------------------------------------------------------------------------------------------|
-| -t     | Set the project type.<br/>The following projects are currently supported<br/><br/> - laravel  |
-| -i     | Specify the path of the yaml file to be read.                                                 |
+| -t     | Required.<br>Set the project type.<br/>The following projects are currently supported<br/><br/> - laravel  |
+| -i     | Required.<br>Specify the path of the yaml file to be read.                                                 |
+| -o     | Optional.<br>Specify the path to which the source code will be written.                                                 |
 
-## Design document
+## Design document (Yaml file)
 Screen design documents are created in yaml.
 Please create the following items as described in "sample.yaml".
 
@@ -51,17 +52,17 @@ The definitions under "views" are shown in the table below.
 | middleware  | This will be the middleware used on the screen.<br/>Defined by array.<br/>option.             |
 
 ## Note
-I use time and effort to create multiple screen files for various projects.
-Therefore, we created this program, which is designed in a document and created in a batch.
-For the design documents, the reason we chose yaml was that we needed something that could be managed in text format.
-If the design documents are in Excel, it will be difficult to manage them in Git.
-If the design document is in csv, it will be difficult to break lines to explain.
-So we decided to create a design document in yaml.
-If you know of any other good document management methods, please let me know.
+I use time and effort to create multiple screen files for various projects.<br>
+Therefore, we created this program, which is designed in a document and created in a batch.<br>
+For the design documents, the reason we chose yaml was that we needed something that could be managed in text format.<br>
+If the design documents are in Excel, it will be difficult to manage them in Git.<br>
+If the design document is in csv, it will be difficult to break lines to explain.<br>
+So we decided to create a design document in yaml.<br>
+If you know of any other good document management methods, please let me know.<br>
 Thank you!
 
 
-# Author
+## Author
  
 * Shinya Tomozumi
 * Hinco System
