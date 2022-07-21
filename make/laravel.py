@@ -26,7 +26,7 @@ class Laravel:
         self._parameter_config = parameter_config
         # 出力先のフォルダの初期化設定
         if self._parameter_config.output_dir_path == '':
-            self._parameter_config.output_dir_path = 'output_laravel_views'
+            self._parameter_config.output_dir_path = 'output_views_laravel'
         self._import_yaml = import_yaml
         # テンプレートソースのフォルダを指定する
         self._template_dir = os.path.dirname(__file__) + '/../template/laravel'
