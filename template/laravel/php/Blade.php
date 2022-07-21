@@ -21,6 +21,7 @@
 <body>
 
 <main id="__view_id__">
+__view_id__
 </main>
 
 {{-- Javascript --}}

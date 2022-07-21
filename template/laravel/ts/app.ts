@@ -6,7 +6,5 @@ __require__
  * Ready
  */
 window.onload = () => {
-
-    __view_default__
-
+__view_default__
 };

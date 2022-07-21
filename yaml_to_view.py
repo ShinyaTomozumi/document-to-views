@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-# import library
 import sys
 import os
-from classes import class_laravel
+
 from models.parameter_config import ParameterConfig
+from data.import_yaml import ImportYaml
+from make.laravel import Laravel
 
 
 # Main function
@@ -65,9 +65,17 @@ if __name__ == '__main__':
         print('The specified file is not a "yaml" or "yml" file.')
         exit()
 
+    # yamlからView情報を取得する
+    yaml_views = ImportYaml(parameter_config)
+
     # プロジェクトタイプによって作成するファイルを変更する
     if parameter_config.project_type == 'laravel':
         # Laravel のViewファイルを作成する
-        class_laravel.create_laravel_files(parameter_config)
+        laravel = Laravel(parameter_config, yaml_views)
+        laravel.make()
+    else:
+        print('The specified project does not exist.')
+        exit()
 
+    # Show finish message
     print('Finish yaml to views...')
