@@ -13,11 +13,11 @@ class Laravel:
     """
     Laravelのソース作成クラス
     """
-    _parameter_config: Type[ParameterConfig]
+    _parameter_config: ParameterConfig
     _import_yaml: ImportYaml
     _template_dir: str
 
-    def __init__(self, parameter_config: Type[ParameterConfig], import_yaml: ImportYaml):
+    def __init__(self, parameter_config: ParameterConfig, import_yaml: ImportYaml):
         """
         初期化
         :param parameter_config:

@@ -20,8 +20,7 @@ if __name__ == '__main__':
     args = sys.argv
 
     # 引数の初期化
-    parameter_config = ParameterConfig
-    parameter_config.output_dir_path = ''
+    parameter_config = ParameterConfig()
 
     # パラメータの数をチェックする（最低4つは必要)
     if len(args) < 4:

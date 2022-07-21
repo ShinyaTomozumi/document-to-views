@@ -15,7 +15,7 @@ class ImportYaml:
     description: str
     views: List[YamlViews]
 
-    def __init__(self, parameter_config: Type[ParameterConfig]):
+    def __init__(self, parameter_config: ParameterConfig):
         """
         初期化処理
         :param parameter_config:
