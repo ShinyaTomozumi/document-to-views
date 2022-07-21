@@ -41,7 +41,7 @@ if __name__ == '__main__':
         # 出力先のパスを取得する
         if arg == '-o':
             if (i + 1) < len(args):
-                parameter_config.output_file_path = args[i + 1]
+                parameter_config.output_dir_path = args[i + 1]
         i += 1
 
     # ファイルタイプが設定されていない場合はエラーを返却する
