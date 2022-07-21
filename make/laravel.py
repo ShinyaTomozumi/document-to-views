@@ -60,7 +60,7 @@ class Laravel:
         Controllerファイルの作成
         :return:
         """
-
+        # ViewごとにControllerファイルを作成する
         for view in self._import_yaml.views:
             # ファイル名を設定する
             controller_name = self.__get_controller_name(view.id)
