@@ -314,7 +314,7 @@ class Laravel:
             view_file_name = view.id.lower()
 
             # viewごとのscssファイルを作成する
-            source_file_views = open(output_dirs_views + '/' + view_file_name + '.scss', 'w')
+            source_file_views = open(output_dirs_views + '/_' + view_file_name + '.scss', 'w')
 
             # scss viewファイルのテンプレートソースコードを読み込む
             template_file = open(self._template_dir + '/scss/view.scss', 'r')
