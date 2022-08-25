@@ -311,10 +311,10 @@ class Laravel:
         # viewごとのscssファイルを作成する
         for view in self._import_yaml.views:
             # ファイル名を設定する
-            ts_view_file_name = view.id.lower()
+            view_file_name = view.id.lower()
 
             # viewごとのscssファイルを作成する
-            source_file_views = open(output_dirs_views + '/' + ts_view_file_name + '.ts', 'w')
+            source_file_views = open(output_dirs_views + '/' + view_file_name + '.cscc', 'w')
 
             # scss viewファイルのテンプレートソースコードを読み込む
             template_file = open(self._template_dir + '/scss/view.scss', 'r')
@@ -324,7 +324,8 @@ class Laravel:
             template_source = template_source.replace('__view_id__', view.id.upper())
 
             # コメントを設定する
-            template_source = template_source.replace('__comment__', view.description)
+            comment = view.description.replace('\n', '\n /// ')
+            template_source = template_source.replace('__comment__', comment)
 
             # app.scssに記載するソースコードを設定する
             source_views += '@import "view/{}";\n'.format(view.id.lower())
