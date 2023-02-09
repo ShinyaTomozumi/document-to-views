@@ -141,7 +141,7 @@ class ImportUIFlow(ImportViewsBase):
                         # 上記以外は、現在読み込み中の状態によって、処理を変えていく
                         if is_description_read:
                             # Descriptionの読み込み中であれば、一時保存のDescriptionの後ろに文字列を追加する
-                            temp_views.description += self.__get_parameter_value(line_text)
+                            temp_views.description += '\n' + self.__get_parameter_value(line_text)
 
                         elif self.is_dialogs_read:
                             # Dialogの設定中
@@ -208,7 +208,10 @@ class ImportUIFlow(ImportViewsBase):
         """
         spl_text = text.split(':')
         if len(spl_text) == 1:
-            return ''
+            if ':' in text:
+                return ''
+            else:
+                return text
         else:
             # 後半の文字列は、すべて取得する
             ret_string = ''
