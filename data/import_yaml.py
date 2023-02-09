@@ -1,28 +1,21 @@
 from typing import List, Type
-from models.yaml_views import YamlViews
+from models.views import Views
+from data.import_views_base import ImportViewsBase
 from models.parameter_config import ParameterConfig
 import yaml
 import re
 
 
-class ImportYaml:
+class ImportYaml(ImportViewsBase):
     """
-    Yamlで取り込んだデータのクラス
+    Yamlで取り込んだViewデータの情報
     """
-    version: str
-    copyright: str
-    author: str
-    description: str
-    views: List[YamlViews]
 
     def __init__(self, parameter_config: ParameterConfig):
         """
         初期化処理
         :param parameter_config:
         """
-        # 初期化
-        self.views = []
-
         # yamlファイルの読み込み
         with open(parameter_config.input_files_path, 'r') as yml:
             yaml_info = yaml.safe_load(yml)
@@ -56,7 +49,7 @@ class ImportYaml:
                 continue
 
             # View データを設定する
-            yaml_views = YamlViews()
+            yaml_views = Views()
             yaml_views.id = key
             yaml_views.title = view['title']
             yaml_views.url = view['url']
@@ -64,7 +57,7 @@ class ImportYaml:
             if 'middleware' in view:
                 yaml_views.middleware = view['middleware']
 
-            # URLにパスパラメータの設定確認
+            # URLに、パスのパラメータの設定を確認
             url_path_params = re.findall("(?<=\{).+?(?=\})", yaml_views.url)
             if len(url_path_params) > 0:
                 # パスパラメータが存在する場合は設定する

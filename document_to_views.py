@@ -34,6 +34,10 @@ if __name__ == '__main__':
         if arg == '-t':
             if (i + 1) < len(args):
                 parameter_config.project_type = args[i + 1]
+        # 読み込むドキュメントの種類を設定
+        if arg == '-doc':
+            if (i + 1) < len(args):
+                parameter_config.document_type = args[i + 1]
         # ファイルのパスを取得する
         if arg == '-i':
             if (i + 1) < len(args):
@@ -59,18 +63,36 @@ if __name__ == '__main__':
         print(f'The specified file does not exist. {parameter_config.input_files_path}')
         exit()
 
-    # ファイルの拡張子が「yaml」もしくは「yml」以外の場合はエラーを返却する
-    if not parameter_config.input_files_path.endswith('yaml') and not parameter_config.input_files_path.endswith('yml'):
-        print('The specified file is not a "yaml" or "yml" file.')
+    # ドキュメントの種類によって、Viewの情報を読み込む処理を切り分ける
+    if parameter_config.document_type == 'yaml':
+        # ファイルの拡張子が「yaml」もしくは「yml」以外の場合は、エラーを返却する
+        if not parameter_config.input_files_path.endswith('yaml') \
+                and not parameter_config.input_files_path.endswith('yml'):
+            print('The specified file is not a "yaml" or "yml" file.')
+            exit()
+
+        # 「yaml」から、View情報を読み込む
+        views = ImportYaml(parameter_config)
+    elif parameter_config.document_type == 'uiflow':
+        # ファイルの拡張子が「uif」以外の場合は、エラーを返却する
+        if not parameter_config.input_files_path.endswith('uif'):
+            print('The specified file is not a "uif" file.')
+            exit()
+
+        # 「uiflows」から、View情報を読み込む
+        views = ImportYaml(parameter_config)
+    else:
+        # 対応しているドキュメント種類以外は、エラーを返却する
+        print('Please set the document type correctly.\n'
+              'The supported types are the following formats.\n'
+              ' - yaml\n'
+              ' - uiflow')
         exit()
 
-    # yamlからView情報を取得する
-    yaml_views = ImportYaml(parameter_config)
-
-    # プロジェクトタイプによって作成するファイルを変更する
+    # 指定されたプロジェクトタイプによって、作成するファイルを変更する
     if parameter_config.project_type == 'laravel':
         # Laravel のViewファイルを作成する
-        laravel = Laravel(parameter_config, yaml_views)
+        laravel = Laravel(parameter_config, views)
         laravel.make()
     else:
         print('The specified project does not exist.')

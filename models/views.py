@@ -1,4 +1,4 @@
-class YamlViews:
+class Views:
     """
     Yamlで定義したViewsのクラス
     """

@@ -1,4 +1,4 @@
-# yaml_to_view
+# document_to_views
 This program creates a template for a view file from a design document defined in yaml.
 
 ## How to use

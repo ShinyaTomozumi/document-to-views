@@ -3,10 +3,8 @@ import os
 import datetime
 import shutil
 
-from typing import Type
-
 from models.parameter_config import ParameterConfig
-from data.import_yaml import ImportYaml
+from data.import_views_base import ImportViewsBase
 
 
 class Laravel:
@@ -14,20 +12,20 @@ class Laravel:
     Laravelのソース作成クラス
     """
     _parameter_config: ParameterConfig
-    _import_yaml: ImportYaml
+    _import_yaml: ImportViewsBase
     _template_dir: str
 
-    def __init__(self, parameter_config: ParameterConfig, import_yaml: ImportYaml):
+    def __init__(self, parameter_config: ParameterConfig, import_view_base: ImportViewsBase):
         """
         初期化
         :param parameter_config:
-        :param import_yaml:
+        :param import_view_base:
         """
         self._parameter_config = parameter_config
         # 出力先のフォルダの初期化設定
         if self._parameter_config.output_dir_path == '':
             self._parameter_config.output_dir_path = 'output_views_laravel'
-        self._import_yaml = import_yaml
+        self._import_yaml = import_view_base
         # テンプレートソースのフォルダを指定する
         self._template_dir = os.path.dirname(__file__) + '/../template/laravel'
 
@@ -142,6 +140,7 @@ class Laravel:
         controller_file = open(self._template_dir + '/php/routes.php', 'r')
         template_source = controller_file.read()
 
+        # 製作者、及びコピーライトを設定
         author_name = ''
         copyright_name = ''
         if self._import_yaml.copyright != '':
@@ -155,7 +154,7 @@ class Laravel:
         template_source = template_source.replace('__author__', author_name)
         template_source = template_source.replace('__version__', current_time)
 
-        # 各Viewごとのrouteパスのソースを作成する
+        # 各Viewごとの、「route.php」ファイルのソースコードを作成する
         route_path_source = ''
         for view in self._import_yaml.views:
             # ソースコードを作成する
@@ -180,27 +179,27 @@ class Laravel:
 
         template_source = template_source.replace('__source_code__', route_path_source)
 
-        # route.phpファイルにソースコードを書き込む
+        # 「route.php」ファイルに、ソースコードを書き込む
         source_file.write(template_source)
         source_file.close()
 
     def __make_blade(self):
         """
-        bladeファイルを作成する
+        「blade.php」ファイルを作成する
         :return:
         """
         for view in self._import_yaml.views:
-            # ファイル名を設定する
+            # bladeファイルの、ファイル名を設定する
             blade_file_name = view.id + '.blade'
 
-            # 保存先のフォルダを作成する
+            # bladeファイルの、保存先のフォルダを作成する
             output_dirs = self._parameter_config.output_dir_path + '/resources/views'
             os.makedirs(output_dirs, exist_ok=True)
 
-            # blade.phpファイルを開く
+            # 「blade.php」ファイルの初期化
             source_file = open(output_dirs + '/' + blade_file_name + '.php', 'w')
 
-            # bladeファイルのテンプレートソースコードを読み込む
+            # bladeファイルの、テンプレートソースコードを読み込む
             blade_file = open(self._template_dir + '/php/Blade.php', 'r')
             template_source = blade_file.read()
 
@@ -208,19 +207,19 @@ class Laravel:
             comment = view.description.replace('\n', '\n * ')
             template_source = template_source.replace('__comment__', comment)
 
-            # view id を設定する
+            # viewのID を設定する
             template_source = template_source.replace('__view_id__', view.id.upper())
 
-            # タイトルを設定する
+            # タイトル を設定する
             template_source = template_source.replace('__title__', view.title)
 
-            # bladeファイルを作成する
+            # 「blade.php」ファイルを、ソースコードを書き込む
             source_file.write(template_source)
             source_file.close()
 
     def __make_type_script(self):
         """
-        TypeScriptファイルを作成する
+        TypeScriptファイルの、ソースコードテンプレート作成する
         :return:
         """
         # 保存先のフォルダを作成する
@@ -341,7 +340,8 @@ class Laravel:
         source_file.write(app_template_source)
         source_file.close()
 
-    def __get_controller_name(self, id_name: str) -> str:
+    @staticmethod
+    def __get_controller_name(id_name: str) -> str:
         """
         Controller名を取得する
         :return:
