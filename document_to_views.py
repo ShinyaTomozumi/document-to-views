@@ -5,6 +5,7 @@ import os
 
 from models.parameter_config import ParameterConfig
 from data.import_yaml import ImportYaml
+from data.import_uiflow import ImportUIFlow
 from make.laravel import Laravel
 
 
@@ -80,7 +81,7 @@ if __name__ == '__main__':
             exit()
 
         # 「uiflows」から、View情報を読み込む
-        views = ImportYaml(parameter_config)
+        views = ImportUIFlow(parameter_config)
     else:
         # 対応しているドキュメント種類以外は、エラーを返却する
         print('Please set the document type correctly.\n'

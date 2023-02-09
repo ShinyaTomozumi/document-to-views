@@ -1,4 +1,3 @@
-from typing import List, Type
 from models.views import Views
 from data.import_views_base import ImportViewsBase
 from models.parameter_config import ParameterConfig
@@ -8,7 +7,7 @@ import re
 
 class ImportYaml(ImportViewsBase):
     """
-    Yamlで取り込んだViewデータの情報
+    Yaml 形式で取り込んだViewデータの情報を管理する
     """
 
     def __init__(self, parameter_config: ParameterConfig):
@@ -16,6 +15,9 @@ class ImportYaml(ImportViewsBase):
         初期化処理
         :param parameter_config:
         """
+        # 基底クラスの初期化
+        super().__init__()
+
         # yamlファイルの読み込み
         with open(parameter_config.input_files_path, 'r') as yml:
             yaml_info = yaml.safe_load(yml)
@@ -29,9 +31,9 @@ class ImportYaml(ImportViewsBase):
             self.author = yaml_info['author']
 
         # Viewのデータ情報を設定する
-        views = yaml_info['views']
+        yaml_views = yaml_info['views']
 
-        for key, view in views.items():
+        for key, view in yaml_views.items():
             # キーが存在しない場合はエラーを表示してcontinue
             if not key:
                 print('Parameter is none: ' + key)

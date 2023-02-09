@@ -12,7 +12,7 @@ class Laravel:
     Laravelのソース作成クラス
     """
     _parameter_config: ParameterConfig
-    _import_yaml: ImportViewsBase
+    _import_views: ImportViewsBase
     _template_dir: str
 
     def __init__(self, parameter_config: ParameterConfig, import_view_base: ImportViewsBase):
@@ -25,7 +25,7 @@ class Laravel:
         # 出力先のフォルダの初期化設定
         if self._parameter_config.output_dir_path == '':
             self._parameter_config.output_dir_path = 'output_views_laravel'
-        self._import_yaml = import_view_base
+        self._import_views = import_view_base
         # テンプレートソースのフォルダを指定する
         self._template_dir = os.path.dirname(__file__) + '/../template/laravel'
 
@@ -37,6 +37,11 @@ class Laravel:
         # 既に作成したフォルダがあれば削除する
         if os.path.isdir(self._parameter_config.output_dir_path):
             shutil.rmtree(self._parameter_config.output_dir_path)
+
+        # 「view」情報が無ければ、エラーメッセージを表示してエラーを返却する。
+        if len(self._import_views.views) == 0:
+            print('There was no "view" in the loaded document.')
+            return
 
         # Controllerファイルの作成
         self.__create_controller()
@@ -59,7 +64,11 @@ class Laravel:
         :return:
         """
         # ViewごとにControllerファイルを作成する
-        for view in self._import_yaml.views:
+        for view in self._import_views.views:
+            # URLが設定されていない場合は、次の処理を行う
+            if view.url == '':
+                continue
+
             # ファイル名を設定する
             controller_name = self.__get_controller_name(view.id)
 
@@ -92,16 +101,16 @@ class Laravel:
             template_source = template_source.replace('__blade_name__', view.id)
 
             # copyrightを設定する
-            if self._import_yaml.copyright == '':
+            if self._import_views.copyright == '':
                 template_source = template_source.replace('__copyright__', '')
             else:
-                template_source = template_source.replace('__copyright__', '\n * @copyright ' + self._import_yaml.copyright)
+                template_source = template_source.replace('__copyright__', '\n * @copyright ' + self._import_views.copyright)
 
             # authorを設定する
-            if self._import_yaml.author == '':
+            if self._import_views.author == '':
                 template_source = template_source.replace('__author__', '')
             else:
-                template_source = template_source.replace('__author__', '\n * @author ' + self._import_yaml.author)
+                template_source = template_source.replace('__author__', '\n * @author ' + self._import_views.author)
 
             # パラメータを設定する
             if len(view.path) > 0:
@@ -143,10 +152,10 @@ class Laravel:
         # 製作者、及びコピーライトを設定
         author_name = ''
         copyright_name = ''
-        if self._import_yaml.copyright != '':
-            copyright_name = '\n * @copyright ' + self._import_yaml.copyright
-        if self._import_yaml.author != '':
-            author_name = '\n * @author ' + self._import_yaml.author
+        if self._import_views.copyright != '':
+            copyright_name = '\n * @copyright ' + self._import_views.copyright
+        if self._import_views.author != '':
+            author_name = '\n * @author ' + self._import_views.author
 
         # ソースコードを作成する
         current_time = datetime.datetime.now().strftime('%Y_%m_%d_%H%M%S')
@@ -156,7 +165,11 @@ class Laravel:
 
         # 各Viewごとの、「route.php」ファイルのソースコードを作成する
         route_path_source = ''
-        for view in self._import_yaml.views:
+        for view in self._import_views.views:
+            # URLが設定されていない場合は、次の処理を行う
+            if view.url == '':
+                continue
+
             # ソースコードを作成する
             controller_name = self.__get_controller_name(view.id)
             view_id = view.id.upper()
@@ -188,7 +201,11 @@ class Laravel:
         「blade.php」ファイルを作成する
         :return:
         """
-        for view in self._import_yaml.views:
+        for view in self._import_views.views:
+            # URLが設定されていない場合は、次の処理を行う
+            if view.url == '':
+                continue
+
             # bladeファイルの、ファイル名を設定する
             blade_file_name = view.id + '.blade'
 
@@ -242,7 +259,11 @@ class Laravel:
         source_default = ''
 
         # viewごとのtsファイルを作成する
-        for view in self._import_yaml.views:
+        for view in self._import_views.views:
+            # URLが設定されていない場合は、次の処理を行う
+            if view.url == '':
+                continue
+
             # ファイル名を設定する
             ts_view_file_name = view.id.lower()
 
@@ -308,7 +329,11 @@ class Laravel:
         source_views = ''
 
         # viewごとのscssファイルを作成する
-        for view in self._import_yaml.views:
+        for view in self._import_views.views:
+            # URLが設定されていない場合は、次の処理を行う
+            if view.url == '':
+                continue
+
             # ファイル名を設定する
             view_file_name = view.id.lower()
 

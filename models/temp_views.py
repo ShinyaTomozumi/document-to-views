@@ -1,15 +1,15 @@
-from typing import List
+from typing import List, Type
 from models.dialog_views import DialogViews
 
 
-class Views:
+class TempViews:
     """
-    書き出し用のView情報
+    一時的に保存するView 情報
     """
     id: str
+    summary: str
     title: str
     url: str
-    description: str
     path: list[str]
     query: list[str]
     middleware: list[str]
@@ -17,10 +17,11 @@ class Views:
 
     def __init__(self):
         self.id = ''
+        self.summary = ''
         self.title = ''
         self.url = ''
-        self.description = ''
         self.path = []
-        self.query = []
+        self.description = ''
         self.middleware = []
+        self.query = []
         self.dialogs = []

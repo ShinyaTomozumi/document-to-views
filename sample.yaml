@@ -5,6 +5,7 @@ description: |
   This Web site was created for sample purposes.
 views:
   index:
+    summary: Top Page
     title: Sample web page top
     url: /
     description: |
