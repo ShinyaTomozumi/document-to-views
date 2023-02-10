@@ -179,6 +179,7 @@ class ImportUIFlow(ImportViewsBase):
         # 保存した情報を、書き出し用のViewsに設定する
         view_info = Views()
         view_info.id = temp_views.id
+        view_info.summary = temp_views.summary
         view_info.title = temp_views.title
         view_info.url = temp_views.url
         view_info.description = temp_views.description

@@ -9,6 +9,7 @@ class Views:
     id: str
     title: str
     url: str
+    summary: str
     description: str
     path: list[str]
     query: list[str]
@@ -19,6 +20,7 @@ class Views:
         self.id = ''
         self.title = ''
         self.url = ''
+        self.summary = ''
         self.description = ''
         self.path = []
         self.query = []

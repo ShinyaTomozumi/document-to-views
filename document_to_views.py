@@ -7,6 +7,7 @@ from models.parameter_config import ParameterConfig
 from data.import_yaml import ImportYaml
 from data.import_uiflow import ImportUIFlow
 from make.laravel import Laravel
+from make.next_js import NextJs
 
 
 # Main function
@@ -95,6 +96,9 @@ if __name__ == '__main__':
         # Laravel のViewファイルを作成する
         laravel = Laravel(parameter_config, views)
         laravel.make()
+    elif parameter_config.project_type == 'next_js':
+        next_js = NextJs(parameter_config, views)
+        next_js.make()
     else:
         print('The specified project does not exist.')
         exit()

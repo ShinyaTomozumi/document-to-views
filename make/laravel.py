@@ -14,6 +14,7 @@ class Laravel:
     _parameter_config: ParameterConfig
     _import_views: ImportViewsBase
     _template_dir: str
+    _SOURCE_TYPE = 'laravel'
 
     def __init__(self, parameter_config: ParameterConfig, import_view_base: ImportViewsBase):
         """
@@ -24,10 +25,10 @@ class Laravel:
         self._parameter_config = parameter_config
         # 出力先のフォルダの初期化設定
         if self._parameter_config.output_dir_path == '':
-            self._parameter_config.output_dir_path = 'output_views_laravel'
+            self._parameter_config.output_dir_path = 'output_views_' + self._SOURCE_TYPE
         self._import_views = import_view_base
         # テンプレートソースのフォルダを指定する
-        self._template_dir = os.path.dirname(__file__) + '/../template/laravel'
+        self._template_dir = os.path.dirname(__file__) + '/../template/' + self._SOURCE_TYPE
 
     def make(self):
         """
@@ -44,7 +45,7 @@ class Laravel:
             return
 
         # Controllerファイルの作成
-        self.__create_controller()
+        self.__make_controller()
 
         # routeファイルの作成
         self.__make_route()
@@ -58,7 +59,7 @@ class Laravel:
         # SCSSファイルの作成
         self.__make_scss()
 
-    def __create_controller(self):
+    def __make_controller(self):
         """
         Controllerファイルの作成
         :return:
