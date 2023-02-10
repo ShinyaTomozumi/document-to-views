@@ -1,11 +1,12 @@
-import re
 import os
 import datetime
 import shutil
+from typing import List
 
 from models.parameter_config import ParameterConfig
+from models.dialog_views import DialogViews
 from data.import_views_base import ImportViewsBase
-import lib.name_case_convert
+import lib.name_case_convert as NameCaseConvert
 
 
 class NextJs:
@@ -116,7 +117,7 @@ class NextJs:
             template_source = template_source.replace('__version__', current_time)
 
             # view id を設定する
-            view_id = lib.name_case_convert.snake_to_pascal(view.id)
+            view_id = NameCaseConvert.snake_to_pascal(view.id)
             template_source = template_source.replace('__view_id__', view_id)
 
             # summary を設定する
@@ -143,6 +144,53 @@ class NextJs:
                 # 通常のページViewの場合は、routerの箇所を削除する
                 template_source = template_source.replace('__router__', '')
                 template_source = template_source.replace('__get_path_parameters__', '')
+
+            # DialogViewの設定
+            self.__make_dialog_view(view.dialogs)
+
+            # tsxファイルの書き出し
+            source_file.write(template_source)
+            source_file.close()
+
+    def __make_dialog_view(self, dialog_views: List[DialogViews]):
+        """
+        Dialogの Viewソースを作成する
+        :return:
+        """
+        if len(dialog_views) == 0:
+            return
+
+        # 設定されているDialogのViewを作成する
+        for dialog_view in dialog_views:
+            dialog_view_name = NameCaseConvert.snake_to_pascal(dialog_view.id)
+
+            # DialogViewの、テンプレートソースを取得する
+            template_file = open(self._template_dir + '/components/Dialog/Dialog.tsx', 'r')
+
+            # テンプレートファイルのソースコードを読み込み
+            template_source = template_file.read()
+
+            # 出力先のファイルのパスを指定する
+            output_dirs = self._parameter_config.output_dir_path + '/components/Dialog'
+            os.makedirs(output_dirs, exist_ok=True)
+
+            # ファイルがすでに存在していた場合は、ソースの書き出し処理は行わない
+            file_path = output_dirs + '/' + dialog_view_name + '.tsx'
+            if os.path.isfile(file_path):
+                continue
+
+            # ソースコードを初期化
+            source_file = open(file_path, 'w')
+
+            # ソースコードを設定する
+            comment = dialog_view.description.replace('\n', '\n * ')
+            template_source = template_source.replace('__comment__', comment)
+            template_source = template_source.replace('__summary__', dialog_view.summary)
+            template_source = template_source.replace('__dialog_id__', dialog_view_name)
+
+            # バージョンに、現在時刻を設定する
+            current_time = datetime.datetime.now().strftime('%Y_%m_%d_%H%M%S')
+            template_source = template_source.replace('__version__', current_time)
 
             # tsxファイルの書き出し
             source_file.write(template_source)

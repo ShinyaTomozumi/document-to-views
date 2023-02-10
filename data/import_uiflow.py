@@ -186,6 +186,7 @@ class ImportUIFlow(ImportViewsBase):
         view_info.path = temp_views.path
         view_info.query = temp_views.query
         view_info.description = temp_views.description
+        view_info.dialogs = temp_views.dialogs
         self.views.append(view_info)
 
     def __set_dialog_views(self):
