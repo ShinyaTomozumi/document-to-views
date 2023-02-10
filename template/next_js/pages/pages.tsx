@@ -1,7 +1,8 @@
-import React, {useEffect} from 'react';
+import React, {useEffect} from 'react';__router__
 
 
 /**
+ * ViewId: __view_id__
  * __summary__
  * __comment__
  *
@@ -9,7 +10,7 @@ import React, {useEffect} from 'react';
  * @constructor
  */
 const __view_id__ = () => {
-
+__get_path_parameters__
 
     /**
      * Use effect: 画面初期化処理

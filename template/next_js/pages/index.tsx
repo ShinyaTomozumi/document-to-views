@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 
 
 /**
+ * ViewId: __view_id__
  * __summary__
  * __comment__
  *

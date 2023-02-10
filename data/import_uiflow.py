@@ -91,10 +91,11 @@ class ImportUIFlow(ImportViewsBase):
                         temp_views.url = self.__get_parameter_value(line_text)
 
                         # URLに、パスのパラメータが存在するか確認
-                        url_path_params = re.findall("(?<=\{).+?(?=\})", temp_views.url)
-                        if len(url_path_params) > 0:
-                            # パスパラメータが存在する場合は、一時保存Viewに設定する
-                            temp_views.path = url_path_params
+                        split_url = temp_views.url.split('/')
+                        for url in split_url:
+                            if url.startswith('_'):
+                                # パスパラメータが存在する場合は、一時保存Viewに設定する
+                                temp_views.path.append(url[1:])
 
                         # Description状態を解除
                         is_description_read = False
@@ -182,6 +183,8 @@ class ImportUIFlow(ImportViewsBase):
         view_info.summary = temp_views.summary
         view_info.title = temp_views.title
         view_info.url = temp_views.url
+        view_info.path = temp_views.path
+        view_info.query = temp_views.query
         view_info.description = temp_views.description
         self.views.append(view_info)
 

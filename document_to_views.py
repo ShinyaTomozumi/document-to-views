@@ -14,7 +14,6 @@ from make.next_js import NextJs
 if __name__ == '__main__':
     """Main Function
     """
-
     # Show console log
     print('Start yaml to view files...')
 
@@ -75,6 +74,7 @@ if __name__ == '__main__':
 
         # 「yaml」から、View情報を読み込む
         views = ImportYaml(parameter_config)
+
     elif parameter_config.document_type == 'uiflow':
         # ファイルの拡張子が「uif」以外の場合は、エラーを返却する
         if not parameter_config.input_files_path.endswith('uif'):
@@ -83,6 +83,7 @@ if __name__ == '__main__':
 
         # 「uiflows」から、View情報を読み込む
         views = ImportUIFlow(parameter_config)
+
     else:
         # 対応しているドキュメント種類以外は、エラーを返却する
         print('Please set the document type correctly.\n'
@@ -93,12 +94,15 @@ if __name__ == '__main__':
 
     # 指定されたプロジェクトタイプによって、作成するファイルを変更する
     if parameter_config.project_type == 'laravel':
-        # Laravel のViewファイルを作成する
+        # Laravel の、Viewファイルを作成する
         laravel = Laravel(parameter_config, views)
         laravel.make()
+
     elif parameter_config.project_type == 'next_js':
+        # UI Flows の、Viewファイルを作成する
         next_js = NextJs(parameter_config, views)
         next_js.make()
+
     else:
         print('The specified project does not exist.')
         exit()

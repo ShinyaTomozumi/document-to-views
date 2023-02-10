@@ -60,11 +60,7 @@ class NextJs:
             if view.url == '':
                 continue
 
-            # 保存先のフォルダを作成する
-            output_dirs = self._parameter_config.output_dir_path + '/pages'
-            os.makedirs(output_dirs, exist_ok=True)
-
-            # Controllerのテンプレートソースコードを読み込む
+            # tsxファイルの、テンプレートソースコードを読み込む
             if view.url == '/':
                 # URLがインデックスページの場合は、「index.tsx」を元にソースを作成する
                 template_file = open(self._template_dir + '/pages/index.tsx', 'r')
@@ -77,14 +73,39 @@ class NextJs:
                 template_file = open(self._template_dir + '/pages/Pages.tsx', 'r')
 
                 # ファイル名を設定する
-                pages_name = self.__get_pages_name(view.id)
+                pages_name = self.__get_pages_name(view.url)
 
+            # 保存先のフォルダを作成する
+            split_url = view.url.split('/')
+
+            # 書き出し先の「pages」フォルダの、パスを設定する
+            output_dirs = self._parameter_config.output_dir_path + '/pages'
+
+            # パスが２階層以上の場合は、階層に合わせたフォルダを作成する
+            if len(split_url) > 2:
+                # 書き出し先が、２階層以下の場合
+                # フォルダにパスパラメータとなるものがあるか、判断してパスを設定する。
+                for index in range(len(split_url)-1):
+                    path = split_url[index]
+                    if path.startswith('_'):
+                        path = '[' + path[1:] + ']'
+
+                    output_dirs += '/' + path
+
+                # フォルダの作成
+                os.makedirs(output_dirs, exist_ok=True)
+                # 書き出しファイルの初期化
+                source_file = open(output_dirs + '/' + pages_name + '.tsx', 'w')
+
+            else:
+                # 書き出し先が「pages」フォルダの直下
+                # フォルダの作成
+                os.makedirs(output_dirs, exist_ok=True)
+                # 書き出しファイルの初期化
+                source_file = open(output_dirs + '/' + pages_name + '.tsx', 'w')
 
             # テンプレートファイルのソースコードを読み込み
             template_source = template_file.read()
-
-            # 書き出すtsxファイルの初期化
-            source_file = open(output_dirs + '/' + pages_name + '.tsx', 'w')
 
             # ソースコードを設定する
             comment = view.description.replace('\n', '\n * ')
@@ -95,10 +116,33 @@ class NextJs:
             template_source = template_source.replace('__version__', current_time)
 
             # view id を設定する
-            template_source = template_source.replace('__view_id__', pages_name)
+            view_id = lib.name_case_convert.snake_to_pascal(view.id)
+            template_source = template_source.replace('__view_id__', view_id)
 
             # summary を設定する
             template_source = template_source.replace('__summary__', view.summary)
+
+            # クエリ情報があれば、ソースコードに記述する
+            temp_queries = []
+            if len(view.path) > 0:
+                temp_queries = view.path
+            if len(view.query) > 0:
+                temp_queries.extend(view.query)
+
+            if len(temp_queries) > 0:
+                # 通常のページViewの場合は、routerの箇所を削除する
+                template_source = template_source.replace('__router__', '\nimport {useRouter} from \'next/router\';')
+                get_path_parameter = '    const router = useRouter();\n'
+                get_path_parameter += '    const {' + ", ".join(temp_queries) + '} = router.query;\n\n\n'
+                get_path_parameter += '    // Execute processing when Query acquisition is complete.\n'
+                get_path_parameter += '    useEffect(() => {\n'
+                get_path_parameter += '        if (router.isReady) {\n\n        }\n'
+                get_path_parameter += '    }, [router.query, router]);\n'
+                template_source = template_source.replace('__get_path_parameters__', get_path_parameter)
+            else:
+                # 通常のページViewの場合は、routerの箇所を削除する
+                template_source = template_source.replace('__router__', '')
+                template_source = template_source.replace('__get_path_parameters__', '')
 
             # tsxファイルの書き出し
             source_file.write(template_source)
@@ -110,5 +154,12 @@ class NextJs:
         Pagesのファイル名を返却する
         :return:
         """
-        pascal_name = lib.name_case_convert.snake_to_pascal(id_name)
-        return pascal_name
+        # URLを分割して、最後のパスをファイル名とする
+        split_url = id_name.split('/')
+        url = split_url[-1]
+
+        # パスの先頭が、パラメータを指定する「_」の場合には、Next.jsのクエリ取得用のファイル名に変更する
+        if url.startswith('_'):
+            # 先頭の文字列の「_」を削り、前後を「[]」で囲う
+            url = '[' + url[1:] + ']'
+        return url
