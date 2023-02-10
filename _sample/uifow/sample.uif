@@ -1,0 +1,25 @@
+[Top]
+ID: login
+Title: Login
+URL: /
+Desc: This page is login.
+Input login id and password.
+Click the login button to run it.
+--
+Login button
+={Click}=> Second
+
+
+[Second]
+ID: second_page
+Title: SamplePage
+URL: /Sample
+Desc: Screen after login.
+Middleware: auth
+Query: LoginId
+Dialog: Thank you message display dialog
+ - ID: ThanksMessageDialog
+ - Desc: Once the process button is pressed, it becomes a dialog to be displayed.
+--
+Process button
+={Click}=> Second
