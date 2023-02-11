@@ -86,6 +86,6 @@ If I can save you any time using this tool, I will be happy.<br>
 Thank you!
 
 ## Author
-* Shinya Tomozumi
+* Copyright (c) 2023 Shinya Tomozumi
 * Tomozumi System: https://tomozumi-system.com
 * Twitter : https://twitter.com/hincoco27
