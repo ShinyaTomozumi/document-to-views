@@ -56,23 +56,23 @@ Also, ":" must always appear after "Key".
 Screen design documents are created in yaml.
 Please create the following items as described in "sample.yaml".
 
-| Key         | Description                                                               |
-|-------------|---------------------------------------------------------------------------|
-| version     | This is the version that reads yaml.<br/>Currently not in particular use. |
-| copyright   | The program copyright.<br/>option.                                        |
-| author      | Program creator.<br/>option.                                              |
-| description | This is a description of the document.<br/>required.                      |
-| views       | This is the definition part of the screen.<br/>The screen design is defined below this item.                                    |
+| Key         | Description                                                                                  |
+|-------------|----------------------------------------------------------------------------------------------|
+| version     | This is the version that reads yaml.<br/>Currently not in particular use.                    |
+| copyright   | The program copyright.<br/>option.                                    　                      |
+| author      | Program creator.<br/>option.                                                                 |
+| description | This is a description of the document.<br/>required.                                         |
+| views       | This is the definition part of the screen.<br/>The screen design is defined below this item. |
 
 The definitions under "views" are shown in the table below.
 
-| Key         | Description                                                   |
-|-------------|---------------------------------------------------------------|
+| Key         | Description                                                                        |
+|-------------|------------------------------------------------------------------------------------|
 | id(root)    | It will be the ID of the screen.<br/>Naming conventions are defined in snake form. |
-| title       | This will be the title of the screen.<br/>required.                                   |
-| url         | This is the URL of the screen.<br/>required.                                    |
-| description | This is a description of the screen.<br/>required.                                     |
-| middleware  | This will be the middleware used on the screen.<br/>Defined by array.<br/>option.             |
+| title       | This will be the title of the screen.<br/>required.　                               |
+| url         | This is the URL of the screen.<br/>required.                                       |
+| description | This is a description of the screen.<br/>required.                                 |
+| middleware  | This will be the middleware used on the screen.<br/>Defined by array.<br/>option.  |
 
 
 ## Note
