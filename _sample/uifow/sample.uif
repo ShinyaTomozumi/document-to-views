@@ -7,19 +7,30 @@ Input login id and password.
 Click the login button to run it.
 --
 Login button
-={Click}=> Second
+={Click}=> Sample
 
 
-[Second]
-ID: second_page
+[Sample]
+ID: sample_page
 Title: SamplePage
-URL: /_Sample
+URL: /Sample
 Desc: Screen after login.
 Middleware: auth
 Query: LoginId
+--
+Detail button
+={Click}=> SampleDetail
+
+
+[SampleDetail]
+ID: sample_detail_page
+Title: SampleDetailPage
+URL: /Sample/_SampleId
+Desc: Sample detail pages.
+Middleware: auth
 Dialog: Thank you message display dialog
  - ID: ThanksMessageDialog
  - Desc: Once the process button is pressed, it becomes a dialog to be displayed.
 --
 Process button
-={Click}=> Second
+={Click}=> SampleDetail
