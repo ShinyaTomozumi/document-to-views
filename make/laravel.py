@@ -175,22 +175,35 @@ class Laravel:
             controller_name = self.__get_controller_name(view.id)
             view_id = view.id.upper()
             comment = view.description.replace('\n', '\n * ')
-            middlewares = ','.join(view.middleware)
-            middlewares = '\'' + middlewares.replace(',', '\',\'') + '\''
+
+            # URLは、UiFlowで記述した場合に、先頭が「_」で定義された場合はパラメータ受け取り用に変換する
+            url = ''
+            split_url = view.url.split('/')
+            for i in range(1, len(split_url)):
+                urls = split_url[i]
+                if urls.startswith('_'):
+                    urls = '{' + urls[1:] + '}'
+                url += '/' + urls
+
+            # 書き込むURLを、定義する
             route_path_source += '/**\n' \
                                  ' * GET Views\n' \
                                  ' * {}\n' \
                                  ' * ViewID: {}\n' \
                                  ' */\n'.format(comment, view_id)
+            # Middlewareが設定されているかどうかで、ソースコードを切り分ける
             if len(view.middleware) > 0:
+                middlewares = ','.join(view.middleware)
+                middlewares = '\'' + middlewares.replace(',', '\',\'') + '\''
                 route_path_source += 'Route::GET(\'{}\', [\n' \
                                      '    \'middleware\' => [{}],\n' \
                                      '    \'uses\' => \'App\\Http\\Controllers\\{}@view\'\n' \
-                                     ']);\n\n'.format(view.url, middlewares, controller_name)
+                                     ']);\n\n'.format(url, middlewares, controller_name)
             else:
                 route_path_source += 'Route::GET(\'{}\', \'App\\Http\\Controllers\\{}@view\');' \
-                                     '\n\n'.format(view.url, controller_name)
+                                     '\n\n'.format(url, controller_name)
 
+        # ソースコードの作成
         template_source = template_source.replace('__source_code__', route_path_source)
 
         # 「route.php」ファイルに、ソースコードを書き込む
@@ -224,6 +237,18 @@ class Laravel:
             # ソースコードを設定する
             comment = view.description.replace('\n', '\n * ')
             template_source = template_source.replace('__comment__', comment)
+
+            # copyrightを設定する
+            if self._import_views.copyright == '':
+                template_source = template_source.replace('__copyright__', '')
+            else:
+                template_source = template_source.replace('__copyright__', '\n * @copyright ' + self._import_views.copyright)
+
+            # authorを設定する
+            if self._import_views.author == '':
+                template_source = template_source.replace('__author__', '')
+            else:
+                template_source = template_source.replace('__author__', '\n * @author ' + self._import_views.author)
 
             # viewのID を設定する
             template_source = template_source.replace('__view_id__', view.id.upper())

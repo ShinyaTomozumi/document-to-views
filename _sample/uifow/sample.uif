@@ -13,7 +13,7 @@ Login button
 [Second]
 ID: second_page
 Title: SamplePage
-URL: /Sample
+URL: /_Sample
 Desc: Screen after login.
 Middleware: auth
 Query: LoginId
