@@ -51,7 +51,6 @@ Also, ":" must always appear after "Key".
 | Dialog:     | Optional.<br>Used to display a dialog on the screen.<br>When used, add the following items.<br> - ID:<br> - Desc:                     |
 
 
-## 
 ### - Yaml file
 Screen design documents are created in yaml.
 Please create the following items as described in "sample.yaml".
