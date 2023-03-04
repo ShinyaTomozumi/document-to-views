@@ -9,7 +9,7 @@ import React, {useEffect} from 'react';__router__
  * @version __version__
  * @constructor
  */
-const __view_id__ = () => {
+const __view_id__: NextPage = () => {
 __get_path_parameters__
 
     /**
@@ -27,6 +27,6 @@ __get_path_parameters__
         <>
         </>
     );
-}
+};
 
 export default __view_id__;

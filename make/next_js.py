@@ -118,7 +118,7 @@ class NextJs:
 
             # view id を設定する
             view_id = NameCaseConvert.snake_to_pascal(view.id)
-            template_source = template_source.replace('__view_id__', view_id)
+            template_source = template_source.replace('__view_id__', pages_name)
 
             # summary を設定する
             template_source = template_source.replace('__summary__', view.summary)
