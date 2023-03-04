@@ -15,7 +15,7 @@ def snake_to_pascal(string: str) -> str:
 
 def is_snake_case(string: str) -> bool:
     """
-    パスカル形式かどうかを判定する
+    指定した文字列がスネーク形式かどうかを判定する
     :param string:
     :return:
     """

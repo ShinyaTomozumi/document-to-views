@@ -98,13 +98,16 @@ if __name__ == '__main__':
         laravel = Laravel(parameter_config, views)
         laravel.make()
 
-    elif parameter_config.project_type == 'next_js':
+    elif parameter_config.project_type == 'nextjs':
         # UI Flows の、Viewファイルを作成する
         next_js = NextJs(parameter_config, views)
         next_js.make()
 
     else:
-        print('The specified project does not exist.')
+        print('The specified project does not exist.\n'
+              'The supported types are the following formats.\n'
+              ' - laravel\n'
+              ' - nextjs')
         exit()
 
     # Show finish message
